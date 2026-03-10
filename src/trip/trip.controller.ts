@@ -18,17 +18,17 @@ export class TripController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tripService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.tripService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTripDto: UpdateTripDto) {
-    return this.tripService.update(+id, updateTripDto);
+  update(@Param('id') id: number, @Body() updateTripDto: UpdateTripDto) {
+    return this.tripService.update(id, updateTripDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tripService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.tripService.remove(id);
   }
 }

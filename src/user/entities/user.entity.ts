@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Car } from "src/car/entities/car.entity";
+import { Trip } from "src/trip/entities/trip.entity";
+import { Column, Entity, PrimaryColumn, CreateDateColumn, OneToOne, JoinColumn, OneToMany, JoinTable } from "typeorm";
 
 @Entity('users')
 export class User {
@@ -34,4 +36,14 @@ export class User {
 
     @Column()
     wallet!: number;
+
+    @CreateDateColumn()
+    created_at!: Date;
+
+    @OneToOne(() => Car, (car) => car.user)
+    @JoinColumn()
+    car!: Car;
+
+    @OneToMany(() => Trip, (trip) => trip.user)
+    trips!: Trip[];
 }

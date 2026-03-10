@@ -5,7 +5,7 @@ import { UpdateCarDto } from './dto/update-car.dto';
 
 @Controller('car')
 export class CarController {
-  constructor(private readonly carService: CarService) {}
+  constructor(private readonly carService: CarService) { }
 
   @Post()
   create(@Body() createCarDto: CreateCarDto) {
@@ -18,17 +18,17 @@ export class CarController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.carService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.carService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCarDto: UpdateCarDto) {
+  update(@Param('id') id: number, @Body() updateCarDto: UpdateCarDto) {
     return this.carService.update(+id, updateCarDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     return this.carService.remove(+id);
   }
 }

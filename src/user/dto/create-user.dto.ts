@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsNumber, isString, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class CreateUserDto {
     @IsNumber()
@@ -41,4 +41,7 @@ export class CreateUserDto {
 
     @IsNumber()
     wallet!: number;
+
+    @IsOptional()
+    car?: any;
 }

@@ -1,26 +1,61 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Trip } from './entities/trip.entity';
+import { User } from 'src/user/entities/user.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class TripService {
-  create(createTripDto: CreateTripDto) {
-    return 'This action adds a new trip';
+  constructor(
+    @InjectRepository(Trip)
+    private readonly tripRepository: Repository<Trip>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) { }
+
+  async create(createTripDto: CreateTripDto) {
+    const userExists = await this.userRepository.findOneBy({ id: createTripDto.user });
+    if (!userExists) {
+      throw new NotFoundException(`User #${createTripDto.user} not found`);
+    }
+    const trip = this.tripRepository.create({
+      ...createTripDto,
+      user: userExists
+    });
+    return this.tripRepository.save(trip);
   }
 
   findAll() {
-    return `This action returns all trip`;
+    return this.tripRepository.find({ relations: ['user'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} trip`;
+  async findOne(id: number) {
+    const trip = await this.tripRepository.findOne({
+      where: { id },
+      relations: ['user']
+    });
+    if (!trip) throw new NotFoundException(`Trip #${id} not found`);
+    return trip;
   }
 
-  update(id: number, updateTripDto: UpdateTripDto) {
-    return `This action updates a #${id} trip`;
+  async update(id: number, updateTripDto: UpdateTripDto) {
+    const trip = await this.findOne(id);
+    
+    if (updateTripDto.user) {
+      const userExists = await this.userRepository.findOneBy({ id: updateTripDto.user });
+      if (!userExists) {
+        throw new NotFoundException(`User #${updateTripDto.user} not found`);
+      }
+    }
+
+    Object.assign(trip, updateTripDto);
+    return this.tripRepository.save(trip);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} trip`;
+  async remove(id: number) {
+    const trip = await this.findOne(id);
+    return this.tripRepository.remove(trip);
   }
 }
