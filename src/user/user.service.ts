@@ -29,8 +29,6 @@ export class UserService {
         `Email ${createUserDto.email} already in use`,
       );
 
-    console.log(createUserDto.car)
-
     if (createUserDto.car) {
       const carId = createUserDto.car;
       const carExists = await this.carRepository.findOneBy({ id: carId });
